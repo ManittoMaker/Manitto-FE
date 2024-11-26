@@ -1,15 +1,16 @@
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
-const saveMatchesToFirestore = async (matches) => {
+const saveMatchesToFirestore = async (matches, groupId) => {
   try {
-    const docRef = await addDoc(collection(db, "matches"), {
+    await addDoc(collection(db, "matches"), {
+      groupId,
       matches,
       createdAt: new Date(),
     });
-    console.log("Document written with ID: ", docRef.id);
+    console.log("매칭 결과가 성공적으로 저장되었습니다.");
   } catch (error) {
-    console.error("Error adding document: ", error);
+    console.error("Firestore에 매칭 결과 저장 중 오류 발생:", error);
   }
 };
 

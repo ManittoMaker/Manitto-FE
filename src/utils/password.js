@@ -1,4 +1,3 @@
-// 한국 멸종 위기종 동물 이름 목록
 const endangeredAnimals = [
   "수달",
   "산양",
@@ -45,7 +44,27 @@ const endangeredAnimals = [
   "울릉도독도박쥐",
 ];
 
+const colors = [
+  "빨강",
+  "하양",
+  "파란",
+  "검은",
+  "주황",
+  "노랑",
+  "푸른",
+  "초록",
+  "보라",
+  "남색",
+  "분홍",
+];
+
 export const getRandomAnimal = () => {
   const index = Math.floor(Math.random() * endangeredAnimals.length);
   return endangeredAnimals[index];
+};
+
+export const getRandomColorAnimal = () => {
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  const randomAnimal = getRandomAnimal();
+  return `${randomColor}${randomAnimal}`;
 };
