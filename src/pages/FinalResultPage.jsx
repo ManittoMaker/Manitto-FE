@@ -13,6 +13,7 @@ import {
   Alert,
 } from "@mui/material";
 import getGroupDetailsFromFirestore from "../firebase/getGroupName";
+import { useNavigate } from "react-router-dom";
 
 const FinalResultPage = () => {
   const { groupId } = useParams();
@@ -20,6 +21,7 @@ const FinalResultPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [leaderName, setLeaderName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,16 +73,20 @@ const FinalResultPage = () => {
     }
   };
 
-  const handleCloseSnackbar = (event, reason) => {
+  const handleCloseSnackbar = (reason) => {
     if (reason === "clickaway") return;
     setOpenSnackbar(false);
+  };
+
+  const handleToMain = () => {
+    navigate("/");
   };
 
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          최종 매칭 결과
+        <Typography variant="h5" gutterBottom>
+          🎉 최종 매칭 결과 🎉
         </Typography>
         <Stack spacing={2} alignItems="center">
           {matches.map((match, index) => (
@@ -90,17 +96,16 @@ const FinalResultPage = () => {
               key={index}
             >
               <CardContent>
-                <Typography variant="h6" color="teal" gutterBottom>
+                <Typography variant="h6" color="#e0f2f1" gutterBottom>
                   {match.giver}
                 </Typography>
-                <Typography variant="body1" color="green">
+                <Typography variant="body1" color="#80cbc4">
                   비밀번호: {match.password}
                 </Typography>
                 <Button
                   variant="contained"
-                  color="yellow"
                   onClick={() => handleKakaoShare(match)}
-                  sx={{ mt: 1, bgcolor: "yellow" }}
+                  sx={{ mt: 1, bgcolor: "#ffc107" }}
                 >
                   <img
                     src={"/talkkakao.png"}
@@ -111,7 +116,7 @@ const FinalResultPage = () => {
                       objectFit: "cover",
                     }}
                   />
-                  <Box sx={{ ml: 1 }}>비밀번호 공유</Box>
+                  <Box sx={{ ml: 1, color: "black" }}>비밀번호 공유</Box>
                 </Button>
               </CardContent>
             </Card>
@@ -121,9 +126,25 @@ const FinalResultPage = () => {
           variant="contained"
           color="primary"
           onClick={handleCopyURL}
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, width: "120px" }}
         >
           URL 공유하기
+        </Button>
+        <Button
+          variant="outlined"
+          color="teal"
+          onClick={handleToMain}
+          sx={{
+            color: "teal",
+            mt: 2,
+            mr: "auto",
+            ml: "auto",
+            display: "flex",
+            justifyContent: "center",
+            width: "120px",
+          }}
+        >
+          메인으로
         </Button>
         <Snackbar
           open={openSnackbar}

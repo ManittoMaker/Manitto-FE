@@ -48,7 +48,7 @@ const CreateGroupPage = () => {
     }
   };
 
-  const handleCloseSnackbar = (event, reason) => {
+  const handleCloseSnackbar = (reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -63,7 +63,7 @@ const CreateGroupPage = () => {
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
         <Typography variant="h4" sx={{ marginBottom: 1 }}>
-          🎄 마니또 🎅
+          🎄 마니또 생성기 🎅
         </Typography>
         <img
           src="/Manito.png"

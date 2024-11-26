@@ -2,14 +2,12 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
-      main: "#d32f2f", // 연말 분위기의 레드
+      main: "#d32f2f",
     },
     secondary: {
-      main: "#388e3c", // 따뜻한 초록
-    },
-    background: {
-      default: "#f9f5e9", // 따뜻한 배경색
+      main: "#4db6ac",
     },
   },
   typography: {

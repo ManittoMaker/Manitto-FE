@@ -112,22 +112,28 @@ const InputNamesPage = () => {
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           안녕하세요, 반갑습니다 :)
         </Typography>
-        <Typography variant="h5" gutterBottom>
-          {groupName}의 {leaderName}님!!!
+        <Typography variant="h6" gutterBottom>
+          <Box component="span" sx={{ color: "#b2dfdb" }}>
+            {groupName}
+          </Box>
+          의{" "}
+          <Box component="span" sx={{ color: "#4db6ac" }}>
+            {leaderName}
+          </Box>
+          님!!!
         </Typography>
-        <Typography variant="h7" color="secondary" gutterBottom>
-          이 그룹의 비밀번호는 &quot;{groupPassword}&quot;입니다.
+        <Typography color="secondary" gutterBottom>
+          이 그룹의 비밀번호는 &quot;
+          <Box component="span" color="#e0f2f1">
+            {groupPassword}
+          </Box>
+          &quot;입니다.
         </Typography>
-        <Typography
-          variant="h7"
-          color="secondary"
-          gutterBottom
-          sx={{ marginBottom: 2 }}
-        >
-          결과를 확인할 때 필요합니다!
+        <Typography color="secondary" sx={{ marginBottom: 2 }}>
+          결과를 확인할 때 필요합니다.
         </Typography>
         <TextField
           label="이름"
@@ -135,7 +141,7 @@ const InputNamesPage = () => {
           onChange={(e) => setInputName(e.target.value)}
           onKeyDown={handleKeyDown}
           fullWidth
-          sx={{ marginBottom: 2 }}
+          sx={{ marginBottom: 2, mt: 2 }}
         />
         {selectedName !== null ? (
           <Button

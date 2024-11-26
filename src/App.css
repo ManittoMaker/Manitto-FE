@@ -5,6 +5,19 @@
   text-align: center;
 }
 
+@font-face {
+  font-family: "Nanum Pen Script";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local("Nanum Pen Script"),
+    url(https://fonts.gstatic.com/s/nanumpenscript/v13/daaDSSYiLGqEal3Ojczy76E8kM4MVw.ttf)
+      format("truetype");
+}
+body {
+  font-family: "Nanum Pen Script", cursive;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

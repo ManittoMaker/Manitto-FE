@@ -13,6 +13,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import fetchResultsFromFirestore from "../firebase/fetchResults";
+import { useNavigate } from "react-router-dom";
 
 const CheckResultsPage = () => {
   const [leaderName, setLeaderName] = useState("");
@@ -22,6 +23,7 @@ const CheckResultsPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showFullResults, setShowFullResults] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
@@ -51,6 +53,9 @@ const CheckResultsPage = () => {
     setShowFullResults(event.target.checked);
   };
 
+  const handleToMain = () => {
+    navigate("/");
+  };
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
@@ -85,37 +90,54 @@ const CheckResultsPage = () => {
         <Button variant="contained" onClick={handleSubmit}>
           결과 확인
         </Button>
-        {results &&
-          results.map((result, index) => (
-            <Card key={index} sx={{ mt: 2 }}>
-              <CardContent>
-                {showFullResults ? (
-                  <>
-                    <Typography variant="h6">
-                      {result.groupName} ({result.leaderName})
-                    </Typography>
-                    {result.matches &&
-                      result.matches.map((match, idx) => (
-                        <Typography key={idx} sx={{ mt: 1 }}>
-                          {match.giver} ➡️ {match.receiver} (비밀번호:{" "}
-                          {match.password})
-                        </Typography>
-                      ))}
-                  </>
-                ) : (
-                  <>
-                    <Typography variant="h6">비밀 정보</Typography>
-                    {result.matches &&
-                      result.matches.map((match, idx) => (
-                        <Typography key={idx} sx={{ mt: 1 }}>
-                          {match.giver} (비밀번호: {match.password})
-                        </Typography>
-                      ))}
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+        {results?.map((result, index) => (
+          <Card key={index} sx={{ mt: 2 }}>
+            <CardContent>
+              {showFullResults ? (
+                <>
+                  <Typography variant="h6">전체 정보</Typography>
+                  <Typography variant="h6">
+                    {result.groupName}{" "}
+                    {result.leaderName && `(${result.leaderName})`}
+                  </Typography>
+                  {result.matches &&
+                    result.matches.map((match, idx) => (
+                      <Typography key={idx} sx={{ mt: 1 }}>
+                        {match.giver} ➡️ {match.receiver} (비밀번호:{" "}
+                        {match.password})
+                      </Typography>
+                    ))}
+                </>
+              ) : (
+                <>
+                  <Typography variant="h6">비밀 정보</Typography>
+                  {result.matches &&
+                    result.matches.map((match, idx) => (
+                      <Typography key={idx} sx={{ mt: 1 }}>
+                        {match.giver} (비밀번호: {match.password})
+                      </Typography>
+                    ))}
+                </>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+        <Button
+          variant="outlined"
+          color="teal"
+          onClick={handleToMain}
+          sx={{
+            color: "teal",
+            mt: 2,
+            mr: "auto",
+            ml: "auto",
+            display: "flex",
+            justifyContent: "center",
+            width: "120px",
+          }}
+        >
+          메인으로
+        </Button>
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}

@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, TextField, Button, Typography, Container } from "@mui/material";
 import fetchMatchesFromFirestore from "../firebase/fetchMatches";
+import getGroupDetailsFromFirestore from "../firebase/getGroupName";
+import Confetti from "react-confetti";
 
 const ShowPage = () => {
   const { groupId } = useParams();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
+  const [groupName, setGroupName] = useState("");
+  const [confettiActive, setConfettiActive] = useState(false);
+
+  useEffect(() => {
+    const fetchGroupDetails = async () => {
+      const details = await getGroupDetailsFromFirestore(groupId);
+      setGroupName(details.groupName);
+    };
+    fetchGroupDetails();
+  }, [groupId]);
 
   const handleSubmit = async () => {
     try {
@@ -18,6 +30,7 @@ const ShowPage = () => {
 
       if (match) {
         setResult(match);
+        setConfettiActive(true); // 결과 확인 시 Confetti 활성화
       } else {
         alert("이름 또는 비밀번호가 잘못되었습니다.");
       }
@@ -29,7 +42,13 @@ const ShowPage = () => {
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
-        <Typography variant="h5">매칭 결과 확인</Typography>
+        {confettiActive && <Confetti />}
+        <Typography sx={{ marginBottom: 1, color: "#b2dfdb" }}>
+          🎁 {groupName} 🎁
+        </Typography>
+        <Typography variant="h5" sx={{ marginBottom: 2 }}>
+          매칭 결과 확인
+        </Typography>
         <TextField
           label="이름"
           value={name}
