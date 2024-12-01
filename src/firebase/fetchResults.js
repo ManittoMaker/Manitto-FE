@@ -26,13 +26,11 @@ const fetchResultsFromFirestore = async (leaderName, groupName, password) => {
       );
       const matchesSnapshot = await getDocs(matchesQuery);
 
-      // 매칭 정보를 배열에 추가
       matchesSnapshot.forEach((matchDoc) => {
         matchesResults.push({
           groupId: groupDoc.id,
           ...matchDoc.data(),
         });
-        console.log(matchesResults);
       });
     }
 

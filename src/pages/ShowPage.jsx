@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography, Container } from "@mui/material";
 import fetchMatchesFromFirestore from "../firebase/fetchMatches";
 import getGroupDetailsFromFirestore from "../firebase/getGroupName";
@@ -7,6 +7,7 @@ import Confetti from "react-confetti";
 
 const ShowPage = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
@@ -30,7 +31,7 @@ const ShowPage = () => {
 
       if (match) {
         setResult(match);
-        setConfettiActive(true); // 결과 확인 시 Confetti 활성화
+        setConfettiActive(true);
       } else {
         alert("이름 또는 비밀번호가 잘못되었습니다.");
       }
@@ -43,7 +44,7 @@ const ShowPage = () => {
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
         {confettiActive && <Confetti />}
-        <Typography sx={{ marginBottom: 1, color: "#b2dfdb" }}>
+        <Typography variant="h5" sx={{ marginBottom: 1, color: "#b2dfdb" }}>
           🎁 {groupName} 🎁
         </Typography>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
@@ -67,24 +68,33 @@ const ShowPage = () => {
           결과 확인
         </Button>
         {result && (
-          <Typography sx={{ marginTop: 4 }} color="primary">
-            <Typography
-              component="span"
-              color="secondary"
-              sx={{ marginRight: 0.5 }}
-            >
-              {result.giver}
+          <>
+            <Typography sx={{ marginTop: 4 }}>
+              <Typography
+                component="span"
+                color="secondary"
+                sx={{ marginRight: 0.5, fontSize: "1.5rem" }}
+              >
+                {result.giver}
+              </Typography>
+              님의 마니또는
+              <Typography
+                component="span"
+                color="secondary"
+                sx={{ marginLeft: 0.5, fontSize: "1.5rem" }}
+              >
+                {result.receiver}
+              </Typography>
+              입니다!
             </Typography>
-            님의 마니또는
-            <Typography
-              component="span"
-              color="secondary"
-              sx={{ marginLeft: 0.5 }}
+            <Button
+              variant="outlined"
+              sx={{ marginTop: 4 }}
+              onClick={() => navigate("/")}
             >
-              {result.receiver}
-            </Typography>
-            입니다!
-          </Typography>
+              메인으로 가기
+            </Button>
+          </>
         )}
       </Box>
     </Container>

@@ -62,7 +62,11 @@ const InputNamesPage = () => {
     if (event.key === "Enter") {
       event.preventDefault();
       setTimeout(() => {
-        addName();
+        if (selectedName !== null) {
+          updateName();
+        } else {
+          addName();
+        }
       }, 0);
     }
   };
@@ -125,16 +129,19 @@ const InputNamesPage = () => {
           </Box>
           님!!!
         </Typography>
-        <Typography color="secondary" gutterBottom>
+        <Typography gutterBottom>
           이 그룹의 비밀번호는 &quot;
-          <Box component="span" color="#e0f2f1">
+          <Box component="span" color="#b2dfdb">
             {groupPassword}
           </Box>
           &quot;입니다.
         </Typography>
-        <Typography color="secondary" sx={{ marginBottom: 2 }}>
+        <Typography component="span" sx={{ marginBottom: 2 }}>
           결과를 확인할 때 필요합니다.
         </Typography>
+        <Box component="span" sx={{ color: "#4db6ac", ml: 1 }}>
+          캡처 추천!
+        </Box>
         <TextField
           label="이름"
           value={inputName}

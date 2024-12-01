@@ -22,7 +22,9 @@ const CheckResultsPage = () => {
   const [results, setResults] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("error"); // 추가된 상태
   const [showFullResults, setShowFullResults] = useState(false);
+  const [groupId, setGroupId] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -34,13 +36,16 @@ const CheckResultsPage = () => {
       );
       if (fetchedResults.length > 0) {
         setResults(fetchedResults);
+        setGroupId(fetchedResults[0].groupId);
       } else {
         setSnackbarMessage("입력하신 정보와 일치하는 결과가 없습니다.");
+        setSnackbarSeverity("error"); // 실패 시 빨간색
         setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("결과 확인 실패:", error);
       setSnackbarMessage("결과를 불러오는 데 실패했습니다.");
+      setSnackbarSeverity("error"); // 실패 시 빨간색
       setOpenSnackbar(true);
     }
   };
@@ -56,10 +61,21 @@ const CheckResultsPage = () => {
   const handleToMain = () => {
     navigate("/");
   };
+
+  const handleCopyInvitationURL = () => {
+    const invitationURL = `https://manitto-73651.web.app/showResult/${groupId}`;
+    navigator.clipboard.writeText(invitationURL);
+    setSnackbarMessage("초대 URL이 클립보드에 성공적으로 복사되었습니다! 🎉");
+    setSnackbarSeverity("success"); // 성공 시 초록색
+    setOpenSnackbar(true);
+  };
+
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
-        <Typography variant="h5">마니또 결과 확인</Typography>
+        <Typography variant="h5" sx={{ marginBottom: 2 }}>
+          마니또 결과 확인
+        </Typography>
         <TextField
           label="리더 이름"
           value={leaderName}
@@ -119,15 +135,28 @@ const CheckResultsPage = () => {
                     ))}
                 </>
               )}
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleCopyInvitationURL}
+                sx={{
+                  mt: 2,
+                  mr: "auto",
+                  ml: "auto",
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "200px",
+                }}
+              >
+                초대 URL 복사
+              </Button>
             </CardContent>
           </Card>
         ))}
         <Button
           variant="outlined"
-          color="teal"
           onClick={handleToMain}
           sx={{
-            color: "teal",
             mt: 2,
             mr: "auto",
             ml: "auto",
@@ -145,7 +174,7 @@ const CheckResultsPage = () => {
         >
           <Alert
             onClose={handleCloseSnackbar}
-            severity="error"
+            severity={snackbarSeverity}
             sx={{ width: "100%" }}
           >
             {snackbarMessage}

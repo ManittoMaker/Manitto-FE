@@ -50,7 +50,12 @@ const NameInput = ({ names, setNames }) => {
         margin: "0 auto",
       }}
     >
-      <Typography variant="h6" sx={{ fontFamily: "Merriweather, serif" }}>
+      <Typography
+        variant="h6"
+        sx={{
+          fontFamily: "IM_Hyemin-Bold",
+        }}
+      >
         🎅 Name 🎁
       </Typography>
       <TextField
@@ -58,7 +63,7 @@ const NameInput = ({ names, setNames }) => {
         fullWidth
         value={name}
         onChange={(e) => setName(e.target.value)}
-        onKeyPress={handleKeyPress} // Enter 키 핸들러 추가
+        onKeyPress={handleKeyPress}
         placeholder="이름을 입력하세요"
         label="이름"
         sx={{

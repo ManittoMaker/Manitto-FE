@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CreateGroupPage from "./pages/CreateGroupPage";
 import InputNamesPage from "./pages/InputNamePage";
@@ -6,6 +7,13 @@ import ShowPage from "./pages/ShowPage";
 import CheckResultsPage from "./pages/CheckResultsPage";
 
 const AppRoutes = () => {
+  useEffect(() => {
+    if (window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(import.meta.env.VITE_APP_KAKAO_JS_KEY);
+      console.log("Kakao SDK initialized");
+    }
+  }, []);
+
   return (
     <Router
       future={{

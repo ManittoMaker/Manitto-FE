@@ -13,7 +13,6 @@ const getGroupDetailsFromFirestore = async (groupId) => {
       password: data.password,
     };
   } else {
-    console.log("No such document!");
     return { groupName: "", leaderName: "", password: "" };
   }
 };

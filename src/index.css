@@ -1,11 +1,9 @@
 @font-face {
-  font-family: "Nanum Pen Script";
+  font-family: "IM_Hyemin-Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.0/IM_Hyemin-Bold.woff")
+    format("woff");
+  font-weight: normal;
   font-style: normal;
-  font-weight: 400;
-  src:
-    local("Nanum Pen Script"),
-    url(https://fonts.gstatic.com/s/nanumpenscript/v13/daaDSSYiLGqEal3Ojczy76E8kM4MVw.ttf)
-      format("truetype");
 }
 
 :root {
@@ -38,7 +36,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  font-family: "Nanum Pen Script", cursive;
+  font-family: "Gaegu", sans-serif;
 }
 
 h1 {
