@@ -63,10 +63,10 @@ const CheckResultsPage = () => {
   };
 
   const handleCopyInvitationURL = () => {
-    const invitationURL = `https://manitto-73651.web.app/showResult/${groupId}`;
+    const invitationURL = `https://manittomaker.com/showResult/${groupId}`;
     navigator.clipboard.writeText(invitationURL);
     setSnackbarMessage("초대 URL이 클립보드에 성공적으로 복사되었습니다! 🎉");
-    setSnackbarSeverity("success"); // 성공 시 초록색
+    setSnackbarSeverity("success");
     setOpenSnackbar(true);
   };
 
