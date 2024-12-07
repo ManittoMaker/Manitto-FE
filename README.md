@@ -1,10 +1,15 @@
-# 마니또 메이커
+# 🎁 마니또 메이커
 
 ![페이지](docs/images/connection.gif)
 
 온라인으로 친구들과 마니또를 뽑고 비밀스러운 선물을 준비해보세요. 마니또 메이커는 앱 다운로드나 회원가입 없이 간편하게 사용할 수 있는 웹사이트입니다.
 
-## 기능
+## 📚 개발 기록
+
+- 시작편 : https://velog.io/@mikio/makemanitto
+- 확장편 : https://velog.io/@mikio/expand-manitto
+
+## ❄️ 기능
 
 - **간편한 그룹 생성**: 리더 이름과 그룹 이름만으로 빠르게 그룹을 생성할 수 있습니다.
   ![그룹 생성](docs/images/makegroup.gif)
@@ -20,7 +25,7 @@
 - **기존 결과 확인**: 리더 권한으로 비밀번호 유실 시 재확인 가능합니다.
   ![기존 결과 확인](docs/images/leaderresult.gif)
 
-## 사용 방법
+## ❄️ 사용 방법
 
 1. **[마니또 메이커](https://manittomaker.com) 접속**
 2. **그룹 생성**:
