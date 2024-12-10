@@ -23,7 +23,6 @@ export const addGroupToFirestore = async (leaderName, groupName) => {
       createdAt: new Date(),
     });
 
-    console.log("그룹이 성공적으로 생성되었습니다:", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Firestore에 그룹 추가 중 오류 발생:", error);
