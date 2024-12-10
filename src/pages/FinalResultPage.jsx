@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import getGroupDetailsFromFirestore from "../firebase/getGroupName";
 import { useNavigate } from "react-router-dom";
+import GoogleAd from "../components/GoogleAdComponent";
 
 const FinalResultPage = () => {
   const { groupId } = useParams();
@@ -146,6 +147,7 @@ const FinalResultPage = () => {
         >
           메인으로
         </Button>
+        <GoogleAd />
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}

@@ -4,6 +4,7 @@ import { Box, TextField, Button, Typography, Container } from "@mui/material";
 import fetchMatchesFromFirestore from "../firebase/fetchMatches";
 import getGroupDetailsFromFirestore from "../firebase/getGroupName";
 import Confetti from "react-confetti";
+import GoogleAd from "../components/GoogleAdComponent";
 
 const ShowPage = () => {
   const { groupId } = useParams();
@@ -95,6 +96,7 @@ const ShowPage = () => {
             >
               메인으로 가기
             </Button>
+            <GoogleAd />
           </>
         )}
       </Box>
