@@ -50,8 +50,8 @@ const FinalResultPage = () => {
       window.Kakao.Link.sendDefault({
         objectType: "feed",
         content: {
-          title: `${leaderName}님이 생성한 ✨${groupName}✨ 마니또 뽑기 결과가 나왔어요!`,
-          description: `${match.giver}님의 마니또 비밀번호는 "${match.password}" 입니다! 지금 이름과 비밀번호를 입력해서 바로 확인하고, 선물을 준비하세요! 🎁`,
+          title: `"${match.giver}"님의 비밀번호는 "${match.password}" 입니다! 🎁`,
+          description: `${leaderName}님이 만든 ${groupName} 결과를 확인하고 준비하세요!`,
           imageUrl: "https://i.ibb.co/QbHpY2p/Landing.png",
           link: {
             mobileWebUrl: `https://manittomaker.com/showResult/${groupId}`,

@@ -87,6 +87,7 @@ const ShowPage = () => {
               </Typography>
               입니다!
             </Typography>
+            <Typography>특별한 선물🎁 을 준비해주세요!</Typography>
             <Button
               variant="outlined"
               sx={{ marginTop: 4 }}

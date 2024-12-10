@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -9,9 +9,26 @@ import {
   Alert,
 } from "@mui/material";
 import { addGroupToFirestore, checkGroupDuplicate } from "../firebase/addGroup";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 const CreateGroupPage = () => {
+  const [totalGroups, setTotalGroups] = useState(0);
+  useEffect(() => {
+    const fetchTotalGroups = async () => {
+      try {
+        const db = getFirestore();
+        const groupsRef = collection(db, "groups");
+        const snapshot = await getDocs(groupsRef);
+        setTotalGroups(snapshot.size);
+      } catch (error) {
+        console.error("그룹 수를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchTotalGroups();
+  }, []);
+
   const [leaderName, setLeaderName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -63,7 +80,10 @@ const CreateGroupPage = () => {
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
         <Typography variant="h4" sx={{ marginBottom: 1 }}>
-          🎄 마니또 생성기 🎅
+          🎄 마니또 메이커 🎅
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 2 }}>
+          지금까지 만들어진 그룹 수는 <strong>{totalGroups}</strong>개 입니다.
         </Typography>
         <img
           src="/Manito.png"
