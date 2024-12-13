@@ -53,7 +53,7 @@ const FinalResultPage = () => {
         content: {
           title: `"${match.giver}"님의 비밀번호는 "${match.password}" 입니다! 🎁`,
           description: `${leaderName}님이 만든 ${groupName} 결과를 확인하고 준비하세요!`,
-          imageUrl: "https://i.ibb.co/QbHpY2p/Landing.png",
+          imageUrl: "https://i.ibb.co/HXsKZx5/Landing-4.png",
           link: {
             mobileWebUrl: `https://manittomaker.com/showResult/${groupId}`,
             webUrl: `https://manittomaker.com/showResult/${groupId}`,
