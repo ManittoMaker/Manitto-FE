@@ -161,6 +161,20 @@ const FinalResultPage = () => {
                     />
                     결과 직접 공유
                   </Button>
+                  <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                  >
+                    <Alert
+                      onClose={handleCloseSnackbar}
+                      severity="success"
+                      sx={{ width: "100%" }}
+                    >
+                      클립보드에 복사되었습니다! {match.giver}님에게 바로
+                      공유해주세요!
+                    </Alert>
+                  </Snackbar>
                 </Stack>
                 {sentStatus[match.giver] && (
                   <Typography
@@ -199,19 +213,6 @@ const FinalResultPage = () => {
           메인으로
         </Button>
         <GoogleAd />
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            클립보드에 복사되었습니다! 바로 공유해주세요!
-          </Alert>
-        </Snackbar>
       </Box>
     </Container>
   );
