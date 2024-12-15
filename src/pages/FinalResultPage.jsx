@@ -22,6 +22,7 @@ const FinalResultPage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [leaderName, setLeaderName] = useState("");
+  const [sentStatus, setSentStatus] = useState({}); // 보낸 기록 상태 추가
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,9 +70,21 @@ const FinalResultPage = () => {
           },
         ],
       });
+      setSentStatus((prev) => ({ ...prev, [match.giver]: true })); // 보낸 기록 저장
     } else {
       alert("Kakao SDK가 초기화되지 않았습니다.");
     }
+  };
+
+  const handleCopyMatch = (match) => {
+    const message =
+      `"${match.giver}"님의 비밀번호는 "${match.password}" 입니다! 🎁\n` +
+      `${leaderName}님이 만든 ${groupName} 결과를 확인하고 준비하세요!\n` +
+      `결과 확인 링크: https://manittomaker.com/showResult/${groupId}`;
+    navigator.clipboard.writeText(message).then(() => {
+      setOpenSnackbar(true);
+      setSentStatus((prev) => ({ ...prev, [match.giver]: true })); // 보낸 기록 저장
+    });
   };
 
   const handleCloseSnackbar = (reason) => {
@@ -103,22 +116,60 @@ const FinalResultPage = () => {
                 <Typography variant="body1" color="#80cbc4">
                   비밀번호: {match.password}
                 </Typography>
-                <Button
-                  variant="contained"
-                  onClick={() => handleKakaoShare(match)}
-                  sx={{ mt: 1, bgcolor: "#ffc107" }}
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  mt={1}
+                  justifyContent="center"
                 >
-                  <img
-                    src={"/talkkakao.png"}
-                    alt={"카카오톡"}
-                    style={{
-                      width: "30px",
-                      maxHeight: "30px",
-                      objectFit: "cover",
+                  <Button
+                    variant="contained"
+                    onClick={() => handleKakaoShare(match)}
+                    sx={{ bgcolor: "#ffc107" }}
+                  >
+                    <img
+                      src={"/talkkakao.png"}
+                      alt={"카카오톡"}
+                      style={{
+                        width: "30px",
+                        maxHeight: "30px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <Box sx={{ ml: 1, color: "black" }}>결과 카톡 공유</Box>
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleCopyMatch(match)}
+                    sx={{
+                      color: "#80cbc4",
+                      borderColor: "#80cbc4",
+                      ":hover": {
+                        borderColor: "#80cbc4",
+                        backgroundColor: "#e0f2f1",
+                      },
                     }}
-                  />
-                  <Box sx={{ ml: 1, color: "black" }}>비밀번호 공유</Box>
-                </Button>
+                  >
+                    <img
+                      src="/share_link.png"
+                      alt="공유"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "8px",
+                      }}
+                    />
+                    결과 직접 공유
+                  </Button>
+                </Stack>
+                {sentStatus[match.giver] && (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "green", marginTop: "8px" }}
+                  >
+                    ✅ 결과 공유 완료!
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -158,7 +209,7 @@ const FinalResultPage = () => {
             severity="success"
             sx={{ width: "100%" }}
           >
-            URL이 클립보드에 복사되었습니다!
+            클립보드에 복사되었습니다! 바로 공유해주세요!
           </Alert>
         </Snackbar>
       </Box>
