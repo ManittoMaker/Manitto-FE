@@ -12,7 +12,17 @@ import {
   Alert,
 } from "@mui/material";
 import GoogleAd from "../components/GoogleAdComponent";
-import MatchCard from "../components/MatchCard"; // 분리된 MatchCard 컴포넌트
+import MatchCard from "../components/MatchCard";
+
+// Fisher-Yates Shuffle 알고리즘
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 const FinalResultPage = () => {
   const { groupId } = useParams();
@@ -23,11 +33,12 @@ const FinalResultPage = () => {
   const [leaderName, setLeaderName] = useState("");
   const navigate = useNavigate();
 
-  // 데이터 불러오기
   useEffect(() => {
     const fetchData = async () => {
       const results = await fetchMatchesFromFirestore(groupId);
-      setMatches(results[0]?.matches || []);
+      const fetchedMatches = results[0]?.matches || [];
+      const shuffledMatches = shuffleArray(fetchedMatches); // 배열 섞기
+      setMatches(shuffledMatches);
     };
 
     const fetchGroupDetails = async () => {
@@ -40,7 +51,6 @@ const FinalResultPage = () => {
     fetchGroupDetails();
   }, [groupId]);
 
-  // URL 복사 처리
   const handleCopyURL = () => {
     const url = `${window.location.origin}/showResult/${groupId}`;
     navigator.clipboard.writeText(url).then(
@@ -52,13 +62,11 @@ const FinalResultPage = () => {
     );
   };
 
-  // Snackbar 닫기
   const handleCloseSnackbar = (reason) => {
     if (reason === "clickaway") return;
     setOpenSnackbar(false);
   };
 
-  // 메인으로 이동
   const handleToMain = () => {
     navigate("/");
   };
@@ -73,13 +81,13 @@ const FinalResultPage = () => {
         <Stack spacing={2} alignItems="center">
           {matches.map((match) => (
             <MatchCard
-              key={match.giver} // 고유 키 사용
+              key={match.giver}
               match={match}
               groupName={groupName}
               leaderName={leaderName}
               groupId={groupId}
-              setSnackbarMessage={setSnackbarMessage} // Snackbar 메시지 설정
-              setOpenSnackbar={setOpenSnackbar} // Snackbar 열기
+              setSnackbarMessage={setSnackbarMessage}
+              setOpenSnackbar={setOpenSnackbar}
             />
           ))}
         </Stack>
