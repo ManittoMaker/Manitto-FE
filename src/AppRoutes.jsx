@@ -8,9 +8,18 @@ import CheckResultsPage from "./pages/CheckResultsPage";
 
 const AppRoutes = () => {
   useEffect(() => {
-    if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(import.meta.env.VITE_APP_KAKAO_JS_KEY);
-    }
+    const checkKakao = () => {
+      if (window.Kakao) {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init(import.meta.env.VITE_APP_KAKAO_JS_KEY);
+        }
+      } else {
+        console.warn("Kakao SDK 로드 대기 중...");
+        setTimeout(checkKakao, 500);
+      }
+    };
+
+    checkKakao();
   }, []);
 
   return (

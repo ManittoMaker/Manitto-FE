@@ -14,7 +14,6 @@ import {
 import GoogleAd from "../components/GoogleAdComponent";
 import MatchCard from "../components/MatchCard";
 
-// Fisher-Yates Shuffle 알고리즘
 const shuffleArray = (array) => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -28,9 +27,10 @@ const FinalResultPage = () => {
   const { groupId } = useParams();
   const [matches, setMatches] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // 메시지 상태 추가
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [groupName, setGroupName] = useState("");
   const [leaderName, setLeaderName] = useState("");
+  const [sentStatus, setSentStatus] = useState({}); // 공유 완료 상태 관리
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,6 +71,10 @@ const FinalResultPage = () => {
     navigate("/");
   };
 
+  const updateSentStatus = (giver) => {
+    setSentStatus((prev) => ({ ...prev, [giver]: true }));
+  };
+
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
@@ -86,13 +90,14 @@ const FinalResultPage = () => {
               groupName={groupName}
               leaderName={leaderName}
               groupId={groupId}
+              sentStatus={sentStatus[match.giver]}
+              updateSentStatus={updateSentStatus}
               setSnackbarMessage={setSnackbarMessage}
               setOpenSnackbar={setOpenSnackbar}
             />
           ))}
         </Stack>
 
-        {/* URL 공유 버튼 */}
         <Button
           variant="contained"
           color="primary"
@@ -102,7 +107,6 @@ const FinalResultPage = () => {
           URL 공유하기
         </Button>
 
-        {/* 메인으로 이동 버튼 */}
         <Button
           variant="outlined"
           color="teal"

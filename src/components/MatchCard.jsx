@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +13,8 @@ const MatchCard = ({
   groupName,
   leaderName,
   groupId,
+  sentStatus,
+  updateSentStatus,
   setSnackbarMessage,
   setOpenSnackbar,
 }) => {
@@ -40,12 +43,12 @@ const MatchCard = ({
       });
       setSnackbarMessage(`${match.giver}님에게 카톡 공유 완료!`);
       setOpenSnackbar(true);
+      updateSentStatus(match.giver); // 공유 완료 상태 업데이트
     } else {
       alert("Kakao SDK가 초기화되지 않았습니다.");
     }
   };
 
-  // 결과 복사
   const handleCopyMatch = () => {
     const message =
       `"${match.giver}"님의 비밀번호는 "${match.password}" 입니다! 🎁\n` +
@@ -56,6 +59,7 @@ const MatchCard = ({
         `${match.giver}님의 결과가 클립보드에 복사되었습니다!`
       );
       setOpenSnackbar(true);
+      updateSentStatus(match.giver); // 공유 완료 상태 업데이트
     });
   };
 
@@ -70,7 +74,6 @@ const MatchCard = ({
         </Typography>
 
         <Stack direction="row" spacing={2} mt={1} justifyContent="center">
-          {/* 카카오톡 공유 버튼 */}
           <Button
             variant="contained"
             onClick={handleKakaoShare}
@@ -88,7 +91,6 @@ const MatchCard = ({
             <Box sx={{ ml: 1, color: "black" }}>결과 카톡 공유</Box>
           </Button>
 
-          {/* 결과 복사 버튼 */}
           <Button
             variant="outlined"
             onClick={handleCopyMatch}
@@ -113,6 +115,12 @@ const MatchCard = ({
             결과 직접 공유
           </Button>
         </Stack>
+
+        {sentStatus && (
+          <Typography variant="body2" sx={{ color: "green", marginTop: "8px" }}>
+            ✅ 결과 공유 완료!
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );
