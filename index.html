@@ -24,5 +24,12 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+      if (window.Kakao) {
+        if (!window.Kakao.isInitialized()) {
+          window.Kakao.init("48dd77895e75a82c4e63f1f302ca551b");
+        }
+      }
+    </script>
   </body>
 </html>
