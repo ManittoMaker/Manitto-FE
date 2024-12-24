@@ -7,6 +7,9 @@
 ![1.4천 이용자 달성](docs/images/thousand.png)
 🎁 일주일만에 1.4천 이용자 달성! 🎁
 
+![1.5만 이용자 달성](docs/images/tenthousand.png)
+🎁 3주 만에 1.5만 이용자 달성! 🎁
+
 ## 📚 개발 기록
 
 - 시작편 : https://velog.io/@mikio/makemanitto
