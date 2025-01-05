@@ -30,14 +30,14 @@ const FinalResultPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [groupName, setGroupName] = useState("");
   const [leaderName, setLeaderName] = useState("");
-  const [sentStatus, setSentStatus] = useState({}); // 공유 완료 상태 관리
+  const [sentStatus, setSentStatus] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const results = await fetchMatchesFromFirestore(groupId);
       const fetchedMatches = results[0]?.matches || [];
-      const shuffledMatches = shuffleArray(fetchedMatches); // 배열 섞기
+      const shuffledMatches = shuffleArray(fetchedMatches);
       setMatches(shuffledMatches);
     };
 
@@ -122,7 +122,6 @@ const FinalResultPage = () => {
 
         <GoogleAd />
 
-        {/* Snackbar */}
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}

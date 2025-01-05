@@ -78,7 +78,7 @@ const ShowPage = () => {
               >
                 {result.giver}
               </Typography>
-              님의 마니또는
+              님은
               <Typography
                 component="span"
                 color="secondary"
@@ -86,7 +86,7 @@ const ShowPage = () => {
               >
                 {result.receiver}
               </Typography>
-              입니다!
+              님의 마니또입니다 :D
             </Typography>
             <Typography>특별한 선물🎁 을 준비해주세요!</Typography>
             <Button

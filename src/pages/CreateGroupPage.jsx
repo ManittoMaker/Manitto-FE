@@ -80,13 +80,13 @@ const CreateGroupPage = () => {
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
         <Typography variant="h4" sx={{ marginBottom: 1 }}>
-          🎄 마니또 메이커 🎅
+          🎁 마니또 메이커 🎁
         </Typography>
         <Typography variant="body1" sx={{ marginBottom: 2 }}>
           지금까지 만들어진 그룹 수는 <strong>{totalGroups}</strong>개 입니다.
         </Typography>
         <img
-          src="/Manito.png"
+          src="/dog_blank.PNG"
           alt="Landing Image"
           style={{ width: "15rem", maxHeight: "15rem", objectFit: "cover" }}
         />

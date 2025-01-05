@@ -39,13 +39,13 @@ const CheckResultsPage = () => {
         setGroupId(fetchedResults[0].groupId);
       } else {
         setSnackbarMessage("입력하신 정보와 일치하는 결과가 없습니다.");
-        setSnackbarSeverity("error"); // 실패 시 빨간색
+        setSnackbarSeverity("error");
         setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("결과 확인 실패:", error);
       setSnackbarMessage("결과를 불러오는 데 실패했습니다.");
-      setSnackbarSeverity("error"); // 실패 시 빨간색
+      setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
   };
