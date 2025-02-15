@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -69,7 +68,7 @@ const MatchCard = ({
         <Typography variant="h6" color="#e0f2f1" gutterBottom>
           {match.giver}
         </Typography>
-        <Typography variant="body1" color="#80cbc4">
+        <Typography variant="body1" color="#ffc1cf">
           비밀번호: {match.password}
         </Typography>
 
@@ -88,23 +87,23 @@ const MatchCard = ({
                 objectFit: "cover",
               }}
             />
-            <Box sx={{ ml: 1, color: "black" }}>결과 카톡 공유</Box>
+            <Box sx={{ ml: 1, color: "black" }}>개별 카톡 공유</Box>
           </Button>
 
           <Button
             variant="outlined"
             onClick={handleCopyMatch}
             sx={{
-              color: "#80cbc4",
-              borderColor: "#80cbc4",
+              color: "#FF85A2",
+              borderColor: "#FF85A2",
               ":hover": {
-                borderColor: "#80cbc4",
-                backgroundColor: "#e0f2f1",
+                borderColor: "#FF85A2",
+                backgroundColor: "#fef3f5",
               },
             }}
           >
             <img
-              src="/share_link.png"
+              src="/share_link_pink.png"
               alt="공유"
               style={{
                 width: "20px",

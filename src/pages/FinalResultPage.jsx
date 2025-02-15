@@ -78,7 +78,11 @@ const FinalResultPage = () => {
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ color: "white", fontWeight: "bold" }}
+        >
           🎉 최종 매칭 결과 🎉
         </Typography>
 
@@ -100,21 +104,27 @@ const FinalResultPage = () => {
 
         <Button
           variant="contained"
-          color="primary"
+          sx={{
+            mt: 2,
+            width: "140px",
+            backgroundColor: "#FF85A2", // 연핑크 버튼
+            "&:hover": { backgroundColor: "#FF5C8A" },
+          }}
           onClick={handleCopyURL}
-          sx={{ mt: 2, width: "120px" }}
         >
           URL 공유하기
         </Button>
 
         <Button
           variant="outlined"
-          color="teal"
           onClick={handleToMain}
           sx={{
-            color: "teal",
+            ml: 2,
             mt: 2,
-            width: "120px",
+            width: "140px",
+            color: "#D81B60", // 핑크 포인트
+            borderColor: "#D81B60",
+            "&:hover": { backgroundColor: "#FFE3E3" },
           }}
         >
           메인으로

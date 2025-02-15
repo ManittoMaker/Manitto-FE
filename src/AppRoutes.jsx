@@ -3,7 +3,7 @@ import CreateGroupPage from "./pages/CreateGroupPage";
 import InputNamesPage from "./pages/InputNamePage";
 import FinalResultPage from "./pages/FinalResultPage";
 import ShowPage from "./pages/ShowPage";
-import CheckResultsPage from "./pages/CheckResultsPage";
+import CheckResultsPage from "./pages/CheckResultsPage.jsx";
 
 const AppRoutes = () => {
   return (

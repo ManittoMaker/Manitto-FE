@@ -4,14 +4,14 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#d32f2f",
+      main: "#ED4264",
     },
     secondary: {
-      main: "#4db6ac",
+      main: "#ffd2e5",
     },
   },
   typography: {
-    // fontFamily: "Nanum Gothic",
+    fontFamily: "Nanum Gothic",
     h1: {
       fontWeight: "bold",
       fontSize: "2.5rem",
