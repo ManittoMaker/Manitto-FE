@@ -19,16 +19,16 @@ const GroupInfoModal = ({
           description: `비밀번호는 "${groupPassword}"입니다.\n결과 확인 후 매칭을 준비하세요!`,
           imageUrl: "https://manittomaker.com/dog_white.JPG",
           link: {
-            mobileWebUrl: `https://manittomaker.com/showResult/${groupId}`,
-            webUrl: `https://manittomaker.com/showResult/${groupId}`,
+            mobileWebUrl: `https://manittomaker.com/checkResults`,
+            webUrl: `https://manittomaker.com/checkResults`,
           },
         },
         buttons: [
           {
             title: "결과 보기",
             link: {
-              mobileWebUrl: `https://manittomaker.com/showResult/${groupId}`,
-              webUrl: `https://manittomaker.com/showResult/${groupId}`,
+              mobileWebUrl: `https://manittomaker.com/checkResults`,
+              webUrl: `https://manittomaker.com/checkResults`,
             },
           },
         ],
