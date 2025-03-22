@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -15,34 +15,21 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate, useParams } from "react-router-dom";
-import saveMatchesToFirestore from "../firebase/saveMatches";
-import shuffleArray from "../utils/shuffleArray";
-import { getRandomAnimal } from "../utils/password";
-import getGroupDetailsFromFirestore from "../firebase/getGroupName";
 import GroupInfoModal from "../components/GroupInfoModal";
+import { submitNames } from "../api/createMatch";
+import useGroupStore from "../store/groupStore";
 
 const InputNamesPage = () => {
   const { groupId } = useParams();
   const [names, setNames] = useState([]);
   const [inputName, setInputName] = useState("");
   const [selectedName, setSelectedName] = useState(null);
-  const [groupName, setGroupName] = useState("");
-  const [leaderName, setLeaderName] = useState("");
-  const [groupPassword, setGroupPassword] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchGroupDetails = async () => {
-      const details = await getGroupDetailsFromFirestore(groupId);
-      setGroupName(details.groupName);
-      setLeaderName(details.leaderName);
-      setGroupPassword(details.password);
-    };
-    fetchGroupDetails();
-  }, [groupId]);
+  const { groupName, leaderName, groupPassword } = useGroupStore();
 
   const addName = () => {
     setInputName((currentInput) => {
@@ -98,26 +85,29 @@ const InputNamesPage = () => {
       setSnackbarOpen(true);
       return;
     }
-
-    setModalOpen(true); // 매칭 시작 전에 모달 열기
+    setModalOpen(true);
   };
 
-  const confirmStartMatching = async () => {
-    const shuffled = shuffleArray(names);
-    const matches = shuffled.map((name, index) => ({
-      giver: name,
-      receiver: shuffled[(index + 1) % shuffled.length],
-      password: getRandomAnimal(),
-    }));
+const handleSubmitNames = async () => {
+  if (names.length < 2) {
+    setSnackbarMessage("최소 2명 이상의 이름을 입력해주세요.");
+    setSnackbarOpen(true);
+    return;
+  }
 
-    try {
-      await saveMatchesToFirestore(matches, groupId);
-      navigate(`/finalResult/${groupId}`);
-    } catch (error) {
-      console.error("매칭 저장 실패:", error);
-      alert("매칭 저장 중 오류가 발생했습니다.");
-    }
-  };
+  try {
+    const result = await submitNames(groupId, names);
+    useGroupStore.getState().setMatches(result.result);
+
+    navigate(`/finalResult/${groupId}`);
+  } catch (error) {
+    console.error("❌ 매칭 오류:", error);
+    setSnackbarMessage("매칭에 실패했습니다. 다시 시도해주세요.");
+    setSnackbarOpen(true);
+  }
+};
+
+
 
   const handleCopyToClipboard = () => {
     const text = `${leaderName}님!!\n이 그룹의 이름은 "${groupName}"이고 비밀번호는 "${groupPassword}"입니다! 저장하고 가세요!`;
@@ -139,27 +129,23 @@ const InputNamesPage = () => {
         <Typography
           variant="h6"
           gutterBottom
-          sx={{
-            fontWeight: "bold",
-            color: "#ffc4c4",
-            mb: 2,
-          }}
+          sx={{ fontWeight: "bold", color: "#ffc4c4", mb: 2 }}
         >
           안녕하세요, 반갑습니다 :)
         </Typography>
         <Typography variant="h6" gutterBottom>
-          <Box component="span" sx={{ color: "#ffabd8" }}>
+          <Box component="span" sx={{ color: "#ffabd8", fontWeight: "bold" }}>
             {groupName}
           </Box>
           의{" "}
-          <Box component="span" sx={{ color: "#ffd2e5" }}>
+          <Box component="span" sx={{ color: "#ffd2e5", fontWeight: "bold" }}>
             {leaderName}
           </Box>
           님!!!
         </Typography>
         <Typography gutterBottom>
           이 그룹의 비밀번호는 &quot;
-          <Box component="span" color="#ffd2e5">
+          <Box component="span" sx={{ color: "#ffd2e5", fontWeight: "bold" }}>
             {groupPassword}
           </Box>
           &quot;입니다.
@@ -170,6 +156,7 @@ const InputNamesPage = () => {
         <Box component="span" sx={{ color: "#ffd2e5", ml: 1 }}>
           캡처 추천!
         </Box>
+
         <TextField
           label="이름"
           value={inputName}
@@ -178,6 +165,7 @@ const InputNamesPage = () => {
           fullWidth
           sx={{ marginBottom: 2, mt: 2 }}
         />
+
         {selectedName !== null ? (
           <Button
             variant="contained"
@@ -196,6 +184,7 @@ const InputNamesPage = () => {
             이름 추가
           </Button>
         )}
+
         <List>
           {names.map((name, index) => (
             <ListItem
@@ -203,18 +192,10 @@ const InputNamesPage = () => {
               divider
               secondaryAction={
                 <>
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={() => handleEdit(index)}
-                  >
+                  <IconButton edge="end" onClick={() => handleEdit(index)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDelete(index)}
-                  >
+                  <IconButton edge="end" onClick={() => handleDelete(index)}>
                     <DeleteIcon />
                   </IconButton>
                 </>
@@ -224,6 +205,7 @@ const InputNamesPage = () => {
             </ListItem>
           ))}
         </List>
+
         <Button
           variant="contained"
           sx={{ marginTop: 2 }}
@@ -232,6 +214,7 @@ const InputNamesPage = () => {
         >
           매칭 시작
         </Button>
+
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={6000}
@@ -239,6 +222,7 @@ const InputNamesPage = () => {
         >
           <Alert severity="error">{snackbarMessage}</Alert>
         </Snackbar>
+
         <GroupInfoModal
           open={modalOpen}
           onClose={() => setModalOpen(false)}
@@ -247,7 +231,7 @@ const InputNamesPage = () => {
           groupPassword={groupPassword}
           onCopy={handleCopyToClipboard}
           onShare={handleShareKakao}
-          onConfirm={confirmStartMatching}
+          onConfirm={handleSubmitNames}
         />
       </Box>
     </Container>

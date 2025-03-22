@@ -8,33 +8,35 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { addGroupToFirestore, checkGroupDuplicate } from "../firebase/addGroup";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { createGroup } from '../api/createGroup';
+import { fetchTotalGroups } from "../api/fetchTotalGroups";
 
 const CreateGroupPage = () => {
   const [totalGroups, setTotalGroups] = useState(0);
-  useEffect(() => {
-    const fetchTotalGroups = async () => {
-      try {
-        const db = getFirestore();
-        const groupsRef = collection(db, "groups");
-        const snapshot = await getDocs(groupsRef);
-        setTotalGroups(snapshot.size);
-      } catch (error) {
-        console.error("그룹 수를 가져오는 중 오류 발생:", error);
-      }
-    };
-
-    fetchTotalGroups();
-  }, []);
-
   const [leaderName, setLeaderName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("info");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadTotalGroups = async () => {
+      try {
+        const apiResult = await fetchTotalGroups();
+        if (apiResult.success) {
+          setTotalGroups(apiResult.result.count);
+        } else {
+          console.error("그룹 수 조회 실패:", apiResult.message);
+        }
+      } catch (error) {
+        console.error("API 오류 발생:", error);
+      }
+    };
+
+    loadTotalGroups();
+  }, []);
 
   const handleCreateGroup = async () => {
     if (!leaderName.trim() || !groupName.trim()) {
@@ -44,19 +46,15 @@ const CreateGroupPage = () => {
       return;
     }
 
-    const isDuplicate = await checkGroupDuplicate(groupName, leaderName);
-    if (isDuplicate) {
-      setSnackbarMessage(
-        "이미 같은 이름의 그룹 또는 리더가 존재합니다. 다른 이름을 사용해주세요."
-      );
-      setAlertSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
     try {
-      const groupId = await addGroupToFirestore(leaderName, groupName);
-      navigate(`/inputNames/${groupId}`);
+      const groupId = await createGroup(groupName, leaderName); 
+      if (!groupId) throw new Error("그룹 ID를 받아오지 못했습니다.");
+
+      setSnackbarMessage(`그룹이 성공적으로 생성되었습니다!`);
+      setAlertSeverity("success");
+      setOpenSnackbar(true);
+
+      navigate(`/inputNames/${groupId}`); 
     } catch (error) {
       console.error("그룹 생성 중 오류:", error);
       setSnackbarMessage("그룹 생성에 실패했습니다. 다시 시도해주세요.");
@@ -66,9 +64,7 @@ const CreateGroupPage = () => {
   };
 
   const handleCloseSnackbar = (reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setOpenSnackbar(false);
   };
 
@@ -116,8 +112,7 @@ const CreateGroupPage = () => {
         onClick={handleCheckPreviousResults}
         sx={{
           mt: 2,
-          mr: "auto",
-          ml: "auto",
+          mx: "auto",
           display: "flex",
           justifyContent: "center",
         }}

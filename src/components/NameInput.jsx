@@ -24,7 +24,7 @@ const NameInput = ({ names, setNames }) => {
     }
 
     try {
-      await addUser(name); // Firestore에 사용자 저장
+      await addUser(name); 
       setNames([...names, name]);
       setName("");
     } catch (error) {

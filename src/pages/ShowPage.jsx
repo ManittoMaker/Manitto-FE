@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, TextField, Button, Typography, Container } from "@mui/material";
-import fetchMatchesFromFirestore from "../firebase/fetchMatches";
-import getGroupDetailsFromFirestore from "../firebase/getGroupName";
+import { Box, TextField, Button, Typography, Container, Snackbar, Alert } from "@mui/material";
 import Confetti from "react-confetti";
 import GoogleAd from "../components/GoogleAdComponent";
+import { fetchUserMatch } from "../api/fetchUserMatch";
+import axios from "axios";
 
 const ShowPage = () => {
   const { groupId } = useParams();
@@ -15,30 +15,56 @@ const ShowPage = () => {
   const [groupName, setGroupName] = useState("");
   const [confettiActive, setConfettiActive] = useState(false);
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   useEffect(() => {
-    const fetchGroupDetails = async () => {
-      const details = await getGroupDetailsFromFirestore(groupId);
-      setGroupName(details.groupName);
+    const fetchGroupName = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/groups/${groupId}/name`
+        );
+        if (response.data.success && response.data.result?.groupName) {
+          setGroupName(response.data.result.groupName);
+        } else {
+          setGroupName("알 수 없는 그룹");
+        }
+      } catch (error) {
+        setGroupName("알 수 없는 그룹");
+      }
     };
-    fetchGroupDetails();
+
+    fetchGroupName();
   }, [groupId]);
 
   const handleSubmit = async () => {
-    try {
-      const allMatches = await fetchMatchesFromFirestore(groupId);
-      const match = allMatches[0]?.matches.find(
-        (doc) => doc.giver === name.trim() && doc.password === password.trim()
-      );
+    if (!name.trim() || !password.trim()) {
+      setSnackbarMessage("이름과 비밀번호를 모두 입력해주세요.");
+      setSnackbarOpen(true);
+      return;
+    }
 
-      if (match) {
-        setResult(match);
+    try {
+      const apiResult = await fetchUserMatch(groupId, name.trim(), password.trim());
+
+      if (apiResult.success && apiResult.result) {
+        setResult({
+          giver: name,
+          receiver: apiResult.result.receiver,
+        });
         setConfettiActive(true);
       } else {
-        alert("이름 또는 비밀번호가 잘못되었습니다.");
+        setSnackbarMessage(apiResult.message || "이름 또는 비밀번호가 잘못되었습니다.");
+        setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error("결과 확인 실패:", error);
+      setSnackbarMessage("결과를 불러오는 중 오류가 발생했습니다.");
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -68,6 +94,7 @@ const ShowPage = () => {
         <Button variant="contained" onClick={handleSubmit}>
           결과 확인
         </Button>
+
         {result && (
           <>
             <Typography sx={{ marginTop: 4 }}>
@@ -99,6 +126,17 @@ const ShowPage = () => {
             <GoogleAd />
           </>
         )}
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert severity="warning" variant="filled" onClose={handleCloseSnackbar}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Container>
   );

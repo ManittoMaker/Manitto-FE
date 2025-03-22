@@ -12,39 +12,39 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import fetchResultsFromFirestore from "../firebase/fetchResults";
 import { useNavigate } from "react-router-dom";
+import { fetchGroupResults } from "../api/fetchGroupResults";
 
 const CheckResultsPage = () => {
   const [leaderName, setLeaderName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]);
+  const [groupId, setGroupId] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("error"); // 추가된 상태
+  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
   const [showFullResults, setShowFullResults] = useState(false);
-  const [groupId, setGroupId] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
-      const fetchedResults = await fetchResultsFromFirestore(
-        leaderName,
-        groupName,
-        password
-      );
-      if (fetchedResults.length > 0) {
-        setResults(fetchedResults);
-        setGroupId(fetchedResults[0].groupId);
+      const apiResult = await fetchGroupResults(leaderName, groupName, password);
+      if (apiResult.success && apiResult.result?.result.length > 0) {
+        setResults(apiResult.result.result);
+        setGroupId(apiResult.result.groupId);
+        setSnackbarMessage("성공적으로 결과를 가져왔습니다.");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
       } else {
-        setSnackbarMessage("입력하신 정보와 일치하는 결과가 없습니다.");
+        setResults([]);
+        setSnackbarMessage(apiResult.message || "일치하는 결과가 없습니다.");
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("결과 확인 실패:", error);
-      setSnackbarMessage("결과를 불러오는 데 실패했습니다.");
+      setSnackbarMessage("결과를 불러오는 중 오류가 발생했습니다.");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
@@ -106,33 +106,30 @@ const CheckResultsPage = () => {
         <Button variant="contained" onClick={handleSubmit}>
           결과 확인
         </Button>
-        {results?.map((result, index) => (
-          <Card key={index} sx={{ mt: 2 }}>
+        {results.length > 0 && (
+          <Card sx={{ mt: 2 }}>
             <CardContent>
               {showFullResults ? (
                 <>
-                  <Typography variant="h6">전체 정보</Typography>
-                  <Typography variant="h6">
-                    {result.groupName}{" "}
-                    {result.leaderName && `(${result.leaderName})`}
+                  <Typography variant="h6">🎉 전체 결과 🎉</Typography>
+                  <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                    리더: {leaderName} | 그룹명: {groupName}
                   </Typography>
-                  {result.matches &&
-                    result.matches.map((match, idx) => (
-                      <Typography key={idx} sx={{ mt: 1 }}>
-                        {match.giver} ➡️ {match.receiver} (비밀번호:{" "}
-                        {match.password})
-                      </Typography>
-                    ))}
+                  {results.map((match, idx) => (
+                    <Typography key={idx} sx={{ mt: 1 }}>
+                      {match.giver} ➡️ {match.receiver} (비밀번호:{" "}
+                      {match.password})
+                    </Typography>
+                  ))}
                 </>
               ) : (
                 <>
-                  <Typography variant="h6">비밀 정보</Typography>
-                  {result.matches &&
-                    result.matches.map((match, idx) => (
-                      <Typography key={idx} sx={{ mt: 1 }}>
-                        {match.giver} (비밀번호: {match.password})
-                      </Typography>
-                    ))}
+                  <Typography variant="h6">🔐 비밀번호 정보 🔐</Typography>
+                  {results.map((match, idx) => (
+                    <Typography key={idx} sx={{ mt: 1 }}>
+                      {match.giver} (비밀번호: {match.password})
+                    </Typography>
+                  ))}
                 </>
               )}
               <Button
@@ -141,8 +138,7 @@ const CheckResultsPage = () => {
                 onClick={handleCopyInvitationURL}
                 sx={{
                   mt: 2,
-                  mr: "auto",
-                  ml: "auto",
+                  mx: "auto",
                   display: "flex",
                   justifyContent: "center",
                   width: "200px",
@@ -152,14 +148,13 @@ const CheckResultsPage = () => {
               </Button>
             </CardContent>
           </Card>
-        ))}
+        )}
         <Button
           variant="outlined"
           onClick={handleToMain}
           sx={{
             mt: 2,
-            mr: "auto",
-            ml: "auto",
+            mx: "auto",
             display: "flex",
             justifyContent: "center",
             width: "120px",

@@ -16,7 +16,7 @@ const GroupInfoModal = ({
         objectType: "feed",
         content: {
           title: `📢 ${leaderName}님이 만든 그룹 "${groupName}"의 비밀번호! 🔑`,
-          description: `비밀번호는 "${groupPassword}"입니다.\n결과 확인 후 매칭을 준비하세요!`,
+          description: `비밀번호는 "${groupPassword}"입니다.\n매칭 후 결과를 확인해보세요!`,
           imageUrl: "https://manittomaker.com/dog_white.JPG",
           link: {
             mobileWebUrl: `https://manittomaker.com/checkResults`,
