@@ -28,27 +28,40 @@ const CheckResultsPage = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    try {
-      const apiResult = await fetchGroupResults(leaderName, groupName, password);
-      if (apiResult.success && apiResult.result?.result.length > 0) {
-        setResults(apiResult.result.result);
-        setGroupId(apiResult.result.groupId);
-        setSnackbarMessage("성공적으로 결과를 가져왔습니다.");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        setResults([]);
-        setSnackbarMessage(apiResult.message || "일치하는 결과가 없습니다.");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+  try {
+    const apiResult = await fetchGroupResults(leaderName, groupName, password);
+
+    if (apiResult.success && apiResult.result?.result.length > 0) {
+      setResults(apiResult.result.result);
+      setGroupId(apiResult.result.groupId);
+      setSnackbarMessage("성공적으로 결과를 가져왔습니다.");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+    } else {
+      let msg = apiResult.message || "일치하는 결과가 없습니다.";
+
+      switch (apiResult.code) {
+        case -400:
+          msg = "입력하신 정보와 일치하는 그룹이 존재하지 않습니다.";
+          break;
+        case -102:
+          msg = "잘못된 파라미터입니다. 입력값을 다시 확인해주세요.";
+          break;
       }
-    } catch (error) {
-      console.error("결과 확인 실패:", error);
-      setSnackbarMessage("결과를 불러오는 중 오류가 발생했습니다.");
+
+      setResults([]);
+      setSnackbarMessage(msg);
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
-  };
+  } catch (error) {
+    console.error("결과 확인 실패:", error);
+    setSnackbarMessage("결과를 불러오는 중 오류가 발생했습니다.");
+    setSnackbarSeverity("error");
+    setOpenSnackbar(true);
+  }
+};
+
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
