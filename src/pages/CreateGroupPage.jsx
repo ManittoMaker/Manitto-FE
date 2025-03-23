@@ -56,28 +56,14 @@ const CreateGroupPage = () => {
 
     navigate(`/inputNames/${groupId}`); 
   } catch (error) {
-    console.error("그룹 생성 중 오류:", error);
-    let userMessage = "그룹 생성에 실패했습니다. 다시 시도해주세요.";
-    switch (error.code) {
-      case 400:
-        userMessage = "이미 동일한 리더 이름과 그룹 이름이 존재합니다. 다른 이름으로 시도해주세요.";
-        break;
-      case 401:
-        userMessage = "요청한 정보를 찾을 수 없습니다.";
-        break;
-      case 402:
-        userMessage = "입력값이 올바르지 않습니다. 다시 확인해주세요.";
-        break;
-      case 500:
-        userMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
-        break;
-    }
+  console.error("그룹 생성 중 오류:", error);
+  let userMessage = error.message || "그룹 생성에 실패했습니다. 다시 시도해주세요.";
 
-    setSnackbarMessage(userMessage);
-    setAlertSeverity("error");
-    setOpenSnackbar(true);
+  setSnackbarMessage(userMessage);
+  setAlertSeverity("error");
+  setOpenSnackbar(true);
+}
   }
-};
 
 
 
