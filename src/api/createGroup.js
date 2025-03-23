@@ -10,7 +10,7 @@ export const createGroup = async (groupName, leaderName) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        leader: leaderName,
+        leaderName: leaderName,
         groupName: groupName,
       }),
     });
