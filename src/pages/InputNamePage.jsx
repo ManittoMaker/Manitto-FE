@@ -156,6 +156,9 @@ const handleSubmitNames = async () => {
         <Box component="span" sx={{ color: "#ffd2e5", ml: 1 }}>
           캡처 추천!
         </Box>
+        <Box sx={{ mt: 1 }}>
+          투표에 참여할 참가자 이름을 모두 기입해주세요.
+        </Box>
 
         <TextField
           label="이름"
