@@ -26,15 +26,14 @@ export const createGroup = async (groupName, leaderName) => {
         groupPassword: password,
       });
       return groupId;
-    } else if (response.status === 406) {
-      throw new Error("그룹이 존재하지 않습니다.");
-    } else if (response.status === 422) {
-      throw new Error(`입력 값 오류: ${data.message}`);
     } else {
-      throw new Error(`API 오류: ${data.message}`);
+      throw {
+        code: data.code || response.status,
+        message: data.message || "알 수 없는 오류가 발생했습니다."
+      };
     }
   } catch (error) {
-    console.error("❌ 그룹 생성 중 오류 발생:", error.message);
+    console.error("❌ 그룹 생성 중 오류 발생:", error.message || error);
     throw error;
   }
 };

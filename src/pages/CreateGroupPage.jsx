@@ -31,7 +31,7 @@ const CreateGroupPage = () => {
           console.error("그룹 수 조회 실패:", apiResult.message);
         }
       } catch (error) {
-        console.error("API 오류 발생:", error);
+        console.error(error);
       }
     };
 
@@ -39,29 +39,47 @@ const CreateGroupPage = () => {
   }, []);
 
   const handleCreateGroup = async () => {
-    if (!leaderName.trim() || !groupName.trim()) {
-      setSnackbarMessage("리더 이름과 그룹 이름을 모두 입력하세요.");
-      setAlertSeverity("warning");
-      setOpenSnackbar(true);
-      return;
+  if (!leaderName.trim() || !groupName.trim()) {
+    setSnackbarMessage("리더 이름과 그룹 이름을 모두 입력하세요.");
+    setAlertSeverity("warning");
+    setOpenSnackbar(true);
+    return;
+  }
+
+  try {
+    const groupId = await createGroup(groupName, leaderName); 
+    if (!groupId) throw new Error("그룹 ID를 받아오지 못했습니다.");
+
+    setSnackbarMessage(`그룹이 성공적으로 생성되었습니다!`);
+    setAlertSeverity("success");
+    setOpenSnackbar(true);
+
+    navigate(`/inputNames/${groupId}`); 
+  } catch (error) {
+    console.error("그룹 생성 중 오류:", error);
+    let userMessage = "그룹 생성에 실패했습니다. 다시 시도해주세요.";
+    switch (error.code) {
+      case 400:
+        userMessage = "이미 동일한 리더 이름과 그룹 이름이 존재합니다. 다른 이름으로 시도해주세요.";
+        break;
+      case 401:
+        userMessage = "요청한 정보를 찾을 수 없습니다.";
+        break;
+      case 402:
+        userMessage = "입력값이 올바르지 않습니다. 다시 확인해주세요.";
+        break;
+      case 500:
+        userMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        break;
     }
 
-    try {
-      const groupId = await createGroup(groupName, leaderName); 
-      if (!groupId) throw new Error("그룹 ID를 받아오지 못했습니다.");
+    setSnackbarMessage(userMessage);
+    setAlertSeverity("error");
+    setOpenSnackbar(true);
+  }
+};
 
-      setSnackbarMessage(`그룹이 성공적으로 생성되었습니다!`);
-      setAlertSeverity("success");
-      setOpenSnackbar(true);
 
-      navigate(`/inputNames/${groupId}`); 
-    } catch (error) {
-      console.error("그룹 생성 중 오류:", error);
-      setSnackbarMessage("그룹 생성에 실패했습니다. 다시 시도해주세요.");
-      setAlertSeverity("error");
-      setOpenSnackbar(true);
-    }
-  };
 
   const handleCloseSnackbar = (reason) => {
     if (reason === "clickaway") return;

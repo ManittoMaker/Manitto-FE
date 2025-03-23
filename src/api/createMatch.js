@@ -12,7 +12,10 @@ export const submitNames = async (groupId, names) => {
 
     const data = await response.json();
     if (!response.ok || !data.success) {
-      throw new Error(`매칭 실패: ${data.message}`);
+      throw {
+        code: data.code || response.status,
+        message: data.message || "알 수 없는 오류",
+      };
     }
 
     return data; 

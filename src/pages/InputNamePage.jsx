@@ -98,14 +98,32 @@ const handleSubmitNames = async () => {
   try {
     const result = await submitNames(groupId, names);
     useGroupStore.getState().setMatches(result.result);
-
     navigate(`/finalResult/${groupId}`);
   } catch (error) {
     console.error("❌ 매칭 오류:", error);
-    setSnackbarMessage("매칭에 실패했습니다. 다시 시도해주세요.");
+
+    let userMessage = "매칭에 실패했습니다. 다시 시도해주세요.";
+
+    switch (error.code) {
+      case -304:
+        userMessage = "이미 매칭이 완료된 그룹입니다. 결과 페이지를 확인해주세요.";
+        break;
+      case -303:
+        userMessage = "멤버 이름은 중복될 수 없습니다. 중복된 이름을 제거해주세요.";
+        break;
+      case -102:
+        userMessage = "올바르지 않은 입력값입니다. 이름을 다시 확인해주세요.";
+        break;
+      case -100:
+        userMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        break;
+    }
+
+    setSnackbarMessage(userMessage);
     setSnackbarOpen(true);
   }
 };
+
 
 
 
