@@ -6,6 +6,7 @@ import CherryBlossom from "./components/CherryBlossom";
 import theme from "./theme";
 import AppRoutes from "./AppRoutes";
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>

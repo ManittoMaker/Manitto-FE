@@ -6,8 +6,18 @@ import ShowPage from "./pages/ShowPage";
 import CheckResultsPage from "./pages/CheckResultsPage.jsx";
 import Footer from "./components/Footer.jsx"
 import { Box } from "@mui/material";
+import { analytics } from './firebase';
+import { logEvent } from 'firebase/analytics';
+import { useEffect } from 'react';
 
 const AppRoutes = () => {
+
+  useEffect(() => {
+  if (analytics) {
+    logEvent(analytics, 'page_view'); 
+  }
+}, []);
+
   return (
     <Router
       future={{
