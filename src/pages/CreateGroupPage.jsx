@@ -86,7 +86,7 @@ const CreateGroupPage = () => {
           지금까지 만들어진 그룹 수는 <strong>{totalGroups}</strong>개 입니다.
         </Typography>
         <img
-          src="/dog_blank.PNG"
+          src="/Manito.png"
           alt="Landing Image"
           style={{ width: "15rem", maxHeight: "15rem", objectFit: "cover" }}
         />
