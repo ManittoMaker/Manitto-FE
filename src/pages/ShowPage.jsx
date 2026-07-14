@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography, Container, Snackbar, Alert } from "@mui/material";
-import Confetti from "react-confetti";
+// 변경: react-confetti 대신 canvas-confetti import
+import confetti from "canvas-confetti";
 import GoogleAd from "../components/GoogleAdComponent";
 import { fetchUserMatch } from "../api/fetchUserMatch";
 import axios from "axios";
@@ -13,11 +14,13 @@ const ShowPage = () => {
   const [password, setPassword] = useState("");
   const [result, setResult] = useState(null);
   const [groupName, setGroupName] = useState("");
-  const [confettiActive, setConfettiActive] = useState(false);
+  
+  // 변경: confettiActive state는 더 이상 필요 없어서 삭제했습니다.
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  // 그룹 이름 가져오기
   useEffect(() => {
     const fetchGroupName = async () => {
       try {
@@ -37,6 +40,41 @@ const ShowPage = () => {
     fetchGroupName();
   }, [groupId]);
 
+  // 변경: 결과(result)가 나오면 자동으로 폭죽 효과 실행
+  useEffect(() => {
+    if (result) {
+      const duration = 3 * 1000; // 3초 동안 실행
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        
+        // 양쪽에서 팡팡 터지는 효과
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+        });
+      }, 250);
+
+      return () => clearInterval(interval);
+    }
+  }, [result]);
+
   const handleSubmit = async () => {
     if (!name.trim() || !password.trim()) {
       setSnackbarMessage("이름과 비밀번호를 모두 입력해주세요.");
@@ -52,7 +90,7 @@ const ShowPage = () => {
           giver: name,
           receiver: apiResult.result.receiver,
         });
-        setConfettiActive(true);
+        // 변경: 여기서 setConfettiActive(true)를 할 필요가 없어졌습니다. (useEffect가 처리)
       } else {
         setSnackbarMessage(apiResult.message || "이름 또는 비밀번호가 잘못되었습니다.");
         setSnackbarOpen(true);
@@ -70,7 +108,8 @@ const ShowPage = () => {
   return (
     <Container>
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
-        {confettiActive && <Confetti />}
+        {/* 변경: <Confetti /> 컴포넌트 삭제 (canvas-confetti는 화면 위에 직접 그립니다) */}
+        
         <Typography variant="h5" sx={{ marginBottom: 1, color: "#b2dfdb" }}>
           🎁 {groupName} 🎁
         </Typography>
