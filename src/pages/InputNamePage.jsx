@@ -97,6 +97,14 @@ const handleSubmitNames = async () => {
 
   try {
     const result = await submitNames(groupId, names);
+
+    // 성공 응답이라도 result가 비어 있으면 빈 결과 화면으로 넘어가지 않도록 방어
+    if (!result?.result) {
+      setSnackbarMessage("매칭 결과를 받아오지 못했습니다. 다시 시도해주세요.");
+      setSnackbarOpen(true);
+      return;
+    }
+
     useGroupStore.getState().setMatches(result.result);
     navigate(`/finalResult/${groupId}`);
   } catch (error) {
@@ -133,12 +141,6 @@ const handleSubmitNames = async () => {
       setSnackbarMessage("클립보드에 복사되었습니다!");
       setSnackbarOpen(true);
     });
-  };
-
-  const handleShareKakao = () => {
-    const text = `${leaderName}님!!\n이 그룹의 이름은 "${groupName}"이고 비밀번호는 "${groupPassword}"입니다! 저장하고 가세요!`;
-    const kakaoShareUrl = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(text)}`;
-    window.open(kakaoShareUrl, "_blank");
   };
 
   return (
@@ -251,7 +253,6 @@ const handleSubmitNames = async () => {
           groupName={groupName}
           groupPassword={groupPassword}
           onCopy={handleCopyToClipboard}
-          onShare={handleShareKakao}
           onConfirm={handleSubmitNames}
         />
       </Box>

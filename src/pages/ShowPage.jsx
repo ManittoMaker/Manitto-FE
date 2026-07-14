@@ -5,7 +5,7 @@ import { Box, TextField, Button, Typography, Container, Snackbar, Alert } from "
 import confetti from "canvas-confetti";
 import GoogleAd from "../components/GoogleAdComponent";
 import { fetchUserMatch } from "../api/fetchUserMatch";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 
 const ShowPage = () => {
   const { groupId } = useParams();
@@ -22,22 +22,27 @@ const ShowPage = () => {
 
   // 그룹 이름 가져오기
   useEffect(() => {
+    let cancelled = false; // 언마운트 후 setState 방지 가드
+
     const fetchGroupName = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/groups/${groupId}/name`
-        );
+        const response = await apiClient.get(`/api/groups/${groupId}/name`);
+        if (cancelled) return;
         if (response.data.success && response.data.result?.groupName) {
           setGroupName(response.data.result.groupName);
         } else {
           setGroupName("알 수 없는 그룹");
         }
-      } catch (error) {
-        setGroupName("알 수 없는 그룹");
+      } catch {
+        if (!cancelled) setGroupName("알 수 없는 그룹");
       }
     };
 
     fetchGroupName();
+
+    return () => {
+      cancelled = true;
+    };
   }, [groupId]);
 
   // 변경: 결과(result)가 나오면 자동으로 폭죽 효과 실행
@@ -95,7 +100,7 @@ const ShowPage = () => {
         setSnackbarMessage(apiResult.message || "이름 또는 비밀번호가 잘못되었습니다.");
         setSnackbarOpen(true);
       }
-    } catch (error) {
+    } catch {
       setSnackbarMessage("결과를 불러오는 중 오류가 발생했습니다.");
       setSnackbarOpen(true);
     }

@@ -1,22 +1,16 @@
+import apiClient from "./apiClient";
 import useGroupStore from "../store/groupStore";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const createGroup = async (groupName, leaderName) => {
   const { setGroupInfo } = useGroupStore.getState();
 
   try {
-    const response = await fetch(`${BASE_URL}/api/groups`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ groupName, leaderName }),
+    const { data } = await apiClient.post("/api/groups", {
+      groupName,
+      leaderName,
     });
 
-    const data = await response.json();
-
-    if (response.status === 200 && data.success) {
+    if (data.success && data.result) {
       const { groupId, groupName, leaderName, password } = data.result;
 
       setGroupInfo({
@@ -26,15 +20,24 @@ export const createGroup = async (groupName, leaderName) => {
         groupPassword: password,
       });
       return groupId;
-    } else if (response.status === 406) {
-      throw new Error("그룹이 존재하지 않습니다.");
-    } else if (response.status === 422) {
-      throw new Error(`입력 값 오류: ${data.message}`);
-    } else {
-      throw new Error(`API 오류: ${data.message}`);
     }
+    throw new Error(`API 오류: ${data.message}`);
   } catch (error) {
     console.error("❌ 그룹 생성 중 오류 발생:", error.message);
+
+    // axios는 4xx/5xx 응답도 여기로 들어오므로 상태코드별 메시지로 변환
+    const status = error.response?.status;
+    const serverMessage = error.response?.data?.message;
+
+    if (status === 406) throw new Error("그룹이 존재하지 않습니다.");
+    if (status === 422) throw new Error(`입력 값 오류: ${serverMessage}`);
+    if (error.code === "ECONNABORTED" || error.code === "ERR_CANCELED") {
+      throw new Error("서버가 응답하지 않습니다. 잠시 후 다시 시도해주세요.");
+    }
+    // 기타 HTTP 에러도 사용자에게 영어 원문 대신 한국어 메시지로 노출
+    if (error.response) {
+      throw new Error(`API 오류: ${serverMessage || "잠시 후 다시 시도해주세요."}`);
+    }
     throw error;
   }
 };

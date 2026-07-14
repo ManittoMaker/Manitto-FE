@@ -5,9 +5,17 @@ const CherryBlossom = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let animationFrameId;
+
+    // 창 크기 변경 시 캔버스 크기 갱신
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    handleResize();
 
     const petals = [];
     const totalPetals = 100;
@@ -63,10 +71,18 @@ const CherryBlossom = () => {
         petal.update();
         petal.draw();
       });
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     }
 
     animate();
+
+    window.addEventListener("resize", handleResize);
+
+    // 언마운트 시 애니메이션 루프와 리스너 정리 (메모리 누수 방지)
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (

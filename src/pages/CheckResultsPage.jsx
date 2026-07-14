@@ -31,7 +31,7 @@ const CheckResultsPage = () => {
   try {
     const apiResult = await fetchGroupResults(leaderName, groupName, password);
 
-    if (apiResult.success && apiResult.result?.result.length > 0) {
+    if (apiResult.success && apiResult.result?.result?.length > 0) {
       setResults(apiResult.result.result);
       setGroupId(apiResult.result.groupId);
       setSnackbarMessage("성공적으로 결과를 가져왔습니다.");

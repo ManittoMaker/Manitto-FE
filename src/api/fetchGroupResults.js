@@ -1,19 +1,14 @@
-import axios from 'axios';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import apiClient from "./apiClient";
 
 export const fetchGroupResults = async (leaderName, groupName, password) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/api/matches/results`,
-      {
-        params: {
-          leaderName,
-          groupName,
-          password,
-        },
-      }
-    );
+    const response = await apiClient.get("/api/matches/results", {
+      params: {
+        leaderName,
+        groupName,
+        password,
+      },
+    });
 
     return response.data;
   } catch (error) {
