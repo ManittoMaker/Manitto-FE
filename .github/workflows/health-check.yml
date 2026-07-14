@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "*/15 * * * *" # 15분마다 실행 (UTC 기준)
   workflow_dispatch: # Actions 탭에서 수동 실행도 가능
+    inputs:
+      test_alert:
+        description: "디스코드 알림 테스트 (서버 상태와 무관하게 테스트 메시지 발송)"
+        type: boolean
+        default: false
 
 jobs:
   health-check:
@@ -12,6 +17,7 @@ jobs:
     steps:
       - name: API 서버 응답 확인
         id: check
+        if: inputs.test_alert != true # 테스트 모드에서는 서버 체크 생략
         run: |
           if curl -sf -m 15 "https://jghs01.mooo.com:24101/api/groups/all" > /dev/null; then
             echo "✅ 서버 정상 응답"
@@ -21,10 +27,17 @@ jobs:
           fi
 
       - name: 디스코드 알림 전송
-        if: steps.check.outputs.down == 'true'
+        if: steps.check.outputs.down == 'true' || inputs.test_alert == true
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TEST_MODE: ${{ inputs.test_alert }}
         run: |
-          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+          if [ "$TEST_MODE" = "true" ]; then
+            CONTENT="🧪 **웹훅 연결 테스트** — 디스코드 알림이 정상적으로 발송되고 있어요!"
+          else
+            CONTENT="🚨 **마니또 API 서버 응답 없음!**\n서버(\`jghs01.mooo.com:24101\`)가 15초 내에 응답하지 않았어요.\n점검이 필요합니다 🔧"
+          fi
+          # -f: 웹훅 URL이 잘못됐으면 스텝이 실패로 표시되어 문제를 바로 알 수 있음
+          curl -sf -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d '{
-              "content": "🚨 **마니또 API 서버 응답 없음!**\n서버(`jghs01.mooo.com:24101`)가 15초 내에 응답하지 않았어요.\n점검이 필요합니다 🔧"
-            }'
+            -d "{\"content\": \"$CONTENT\"}"
