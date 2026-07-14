@@ -1,0 +1,30 @@
+# 마니또 API 서버 상태 감시 — 응답이 없으면 디스코드로 알림
+name: 서버 상태 확인
+
+on:
+  schedule:
+    - cron: "*/15 * * * *" # 15분마다 실행 (UTC 기준)
+  workflow_dispatch: # Actions 탭에서 수동 실행도 가능
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: API 서버 응답 확인
+        id: check
+        run: |
+          if curl -sf -m 15 "https://jghs01.mooo.com:24101/api/groups/all" > /dev/null; then
+            echo "✅ 서버 정상 응답"
+          else
+            echo "down=true" >> "$GITHUB_OUTPUT"
+            echo "🚨 서버 응답 없음"
+          fi
+
+      - name: 디스코드 알림 전송
+        if: steps.check.outputs.down == 'true'
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "content": "🚨 **마니또 API 서버 응답 없음!**\n서버(`jghs01.mooo.com:24101`)가 15초 내에 응답하지 않았어요.\n점검이 필요합니다 🔧"
+            }'
