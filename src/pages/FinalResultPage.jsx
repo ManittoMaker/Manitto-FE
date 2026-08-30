@@ -12,7 +12,7 @@ const FinalResultPage = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
   // 공유 완료 상태는 store에 persist — 새로고침해도 체크 표시 유지
-  const { groupName, leaderName, matches, sentStatusByGroup, markSent } =
+  const { groupName, leaderName, groupPassword, matches, sentStatusByGroup, markSent } =
     useGroupStore();
   const sentStatus = sentStatusByGroup[groupId] ?? {};
   const { showSnackbar, snackbarProps } = useSnackbar();
@@ -46,6 +46,38 @@ const FinalResultPage = () => {
           <br />
           참가자는 결과 링크에서 이름과 비밀번호로 자기 마니또를 확인해요.
         </Typography>
+
+        {/* 리더가 나중에 전체 결과를 다시 조회할 때 쓰는 마스터(그룹) 비밀번호 */}
+        {groupPassword && (
+          <Box
+            sx={{
+              mb: 3,
+              mx: "auto",
+              maxWidth: 500,
+              px: 2,
+              py: 1.5,
+              borderRadius: 3,
+              border: "1px dashed",
+              borderColor: "secondary.dark",
+              backgroundColor: "rgba(255, 210, 229, 0.06)",
+            }}
+          >
+            <Typography variant="body2">
+              🔑 리더용 마스터 비밀번호:{" "}
+              <Box
+                component="strong"
+                sx={{ color: "secondary.main", fontSize: "1.1rem" }}
+              >
+                {groupPassword}
+              </Box>
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              &quot;기존 마니또 결과 확인하기&quot;에서 리더 이름 · 그룹 이름과 함께 입력하면
+              <br />
+              언제든 전체 결과를 다시 볼 수 있어요. 꼭 저장해두세요!
+            </Typography>
+          </Box>
+        )}
 
         <Stack spacing={2} alignItems="center">
           {matches?.result?.map((match) => (

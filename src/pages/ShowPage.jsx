@@ -7,11 +7,7 @@ import {
   Typography,
   Container,
   CircularProgress,
-  IconButton,
-  InputAdornment,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import confetti from "canvas-confetti";
 import GoogleAd from "../components/GoogleAdComponent";
 import AppSnackbar from "../components/AppSnackbar";
@@ -24,7 +20,6 @@ const ShowPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [result, setResult] = useState(null);
   const [groupName, setGroupName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -151,7 +146,6 @@ const ShowPage = () => {
         <TextField
           label="비밀번호"
           placeholder="카톡으로 전달받은 비밀번호"
-          type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
@@ -165,21 +159,6 @@ const ShowPage = () => {
           helperText={fieldErrors.password ? "비밀번호를 입력해주세요." : " "}
           fullWidth
           autoComplete="off"
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
           sx={{ marginBottom: 2 }}
         />
         <Button

@@ -10,11 +10,7 @@ import {
   Switch,
   FormControlLabel,
   CircularProgress,
-  IconButton,
-  InputAdornment,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import AppSnackbar from "../components/AppSnackbar";
 import useSnackbar from "../hooks/useSnackbar";
@@ -25,7 +21,6 @@ const CheckResultsPage = () => {
   const [leaderName, setLeaderName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [results, setResults] = useState([]);
   const [groupId, setGroupId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,7 +141,6 @@ const CheckResultsPage = () => {
         <TextField
           label="비밀번호"
           placeholder="그룹 생성 시 받은 비밀번호"
-          type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
@@ -159,21 +153,6 @@ const CheckResultsPage = () => {
           helperText={fieldErrors.password ? "비밀번호를 입력해주세요." : " "}
           fullWidth
           autoComplete="off"
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
           sx={{ mb: 1 }}
         />
         <FormControlLabel
