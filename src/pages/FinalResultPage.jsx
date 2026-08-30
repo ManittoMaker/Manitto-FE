@@ -1,49 +1,50 @@
-import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, Container, Button, Stack, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, Container, Button, Stack } from "@mui/material";
 import GoogleAd from "../components/GoogleAdComponent";
 import MatchCard from "../components/MatchCard";
+import StepIndicator from "../components/StepIndicator";
+import AppSnackbar from "../components/AppSnackbar";
+import useSnackbar from "../hooks/useSnackbar";
+import { shareOrCopy } from "../utils/share";
 import useGroupStore from "../store/groupStore";
-
 
 const FinalResultPage = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
-  const { groupName, leaderName, matches } = useGroupStore();
+  // 공유 완료 상태는 store에 persist — 새로고침해도 체크 표시 유지
+  const { groupName, leaderName, matches, sentStatusByGroup, markSent } =
+    useGroupStore();
+  const sentStatus = sentStatusByGroup[groupId] ?? {};
+  const { showSnackbar, snackbarProps } = useSnackbar();
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [sentStatus, setSentStatus] = useState({});
-
-  const handleCopyURL = () => {
+  const handleShareURL = async () => {
     const url = `${window.location.origin}/showResult/${groupId}`;
-    navigator.clipboard.writeText(url).then(
-      () => {
-        setSnackbarMessage("URL이 클립보드에 복사되었습니다!");
-        setOpenSnackbar(true);
-      },
-      (err) => console.error("Failed to copy: ", err)
-    );
-  };
-
-  const handleCloseSnackbar = (reason) => {
-    if (reason === "clickaway") return;
-    setOpenSnackbar(false);
+    try {
+      const outcome = await shareOrCopy(url);
+      if (outcome === "copied") {
+        showSnackbar("URL이 클립보드에 복사되었습니다!", "success");
+      }
+    } catch (error) {
+      console.error("공유 실패:", error);
+      showSnackbar("공유에 실패했습니다. 다시 시도해주세요.", "error");
+    }
   };
 
   const handleToMain = () => {
     navigate("/");
   };
 
-  const updateSentStatus = (giver) => {
-    setSentStatus((prev) => ({ ...prev, [giver]: true }));
-  };
-
   return (
-    <Container>
-      <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
+    <Container maxWidth="sm">
+      <StepIndicator activeStep={2} />
+      <Box sx={{ textAlign: "center", marginTop: 2, marginBottom: 4 }}>
         <Typography variant="h5" gutterBottom sx={{ color: "white", fontWeight: "bold" }}>
           🎉 최종 매칭 결과 🎉
+        </Typography>
+        <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
+          각 참가자에게 <strong>비밀번호</strong>를 전달해주세요.
+          <br />
+          참가자는 결과 링크에서 이름과 비밀번호로 자기 마니또를 확인해요.
         </Typography>
 
         <Stack spacing={2} alignItems="center">
@@ -55,48 +56,48 @@ const FinalResultPage = () => {
               leaderName={leaderName}
               groupId={groupId}
               sentStatus={sentStatus[match.giver]}
-              updateSentStatus={updateSentStatus}
-              setSnackbarMessage={setSnackbarMessage}
-              setOpenSnackbar={setOpenSnackbar}
+              updateSentStatus={(giver) => markSent(groupId, giver)}
+              onNotify={showSnackbar}
             />
           ))}
         </Stack>
 
-        <Button
-          variant="contained"
-          sx={{
-            mt: 2,
-            width: "140px",
-            backgroundColor: "#FF85A2",
-            "&:hover": { backgroundColor: "#FF5C8A" },
-          }}
-          onClick={handleCopyURL}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 2 }}
+          justifyContent="center"
+          alignItems="center"
+          sx={{ mt: 3 }}
         >
-          URL 공유하기
-        </Button>
+          <Button
+            variant="contained"
+            sx={{
+              width: 180,
+              backgroundColor: "primary.light",
+              "&:hover": { backgroundColor: "primary.main" },
+            }}
+            onClick={handleShareURL}
+          >
+            URL 공유하기
+          </Button>
 
-        <Button
-          variant="outlined"
-          onClick={handleToMain}
-          sx={{
-            ml: 2,
-            mt: 2,
-            width: "140px",
-            color: "#D81B60",
-            borderColor: "#D81B60",
-            "&:hover": { backgroundColor: "#FFE3E3" },
-          }}
-        >
-          메인으로
-        </Button>
+          <Button
+            variant="outlined"
+            onClick={handleToMain}
+            sx={{
+              width: 180,
+              color: "primary.dark",
+              borderColor: "primary.dark",
+              "&:hover": { backgroundColor: "rgba(216, 27, 96, 0.08)" },
+            }}
+          >
+            메인으로
+          </Button>
+        </Stack>
 
         <GoogleAd />
 
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+        <AppSnackbar {...snackbarProps} />
       </Box>
     </Container>
   );

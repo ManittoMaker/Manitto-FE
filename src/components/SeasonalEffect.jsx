@@ -1,6 +1,5 @@
-import React from "react";
 import CherryBlossom from "./CherryBlossom";
-import SnowfallEffect from "./SnowfallEffect"; // 파일명/대소문자 꼭 확인!
+import SnowfallEffect from "./SnowfallEffect";
 
 // month: 0=1월 ~ 11=12월
 const getSeason = (month) => {
@@ -15,6 +14,11 @@ const getSeason = (month) => {
 };
 
 const SeasonalEffect = () => {
+  // 모션 최소화를 선호하는 사용자에게는 파티클 효과를 렌더하지 않음
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return null;
+  }
+
   const month = new Date().getMonth();
   const season = getSeason(month);
 

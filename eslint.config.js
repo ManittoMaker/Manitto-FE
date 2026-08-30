@@ -32,6 +32,8 @@ export default [
       ...react.configs["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
       "react/jsx-no-target-blank": "off",
+      // PropTypes 미사용 프로젝트 (JS + 구조분해 props 관례) — 규칙 비활성화
+      "react/prop-types": "off",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
