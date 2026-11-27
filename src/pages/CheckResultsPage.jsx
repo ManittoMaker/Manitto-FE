@@ -47,7 +47,12 @@ const CheckResultsPage = () => {
 
     setIsSubmitting(true); // 중복 클릭 방지
     try {
-      const apiResult = await fetchGroupResults(leaderName, groupName, password);
+      // 모바일 자동완성·붙여넣기로 끼어든 앞뒤 공백 때문에 조회가 실패하지 않도록 제거
+      const apiResult = await fetchGroupResults(
+        leaderName.trim(),
+        groupName.trim(),
+        password.trim()
+      );
 
       if (apiResult.success && apiResult.result?.result?.length > 0) {
         setResults(apiResult.result.result);
@@ -58,7 +63,18 @@ const CheckResultsPage = () => {
 
         switch (apiResult.code) {
           case -400:
-            msg = "입력하신 정보와 일치하는 그룹이 존재하지 않습니다.";
+            // BE#55 배포 전에는 셋 중 무엇이 틀려도 -400으로 응답한다.
+            // TODO: BE#55 배포 후(비밀번호 불일치가 -404로 분리된 뒤) 아래 문구로 교체
+            // "해당 리더 이름, 그룹 이름 조합으로 생성된 그룹이 없습니다. 그룹은 만든 지 30일이 지나면 삭제됩니다."
+            msg = "리더 이름, 그룹 이름, 비밀번호 중 일치하지 않는 정보가 있습니다.";
+            break;
+          case -404:
+            msg =
+              "리더 이름과 그룹 이름이 일치하는 그룹의 비밀번호와 다릅니다. 그룹을 만들 때 받은 그룹 비밀번호를 입력해 주세요.";
+            break;
+          case -301:
+            // 그룹과 비밀번호는 맞지만 이름 입력(매칭) 단계를 마치지 않은 경우
+            msg = "그룹은 찾았지만 아직 매칭이 완료되지 않았습니다.";
             break;
           case -102:
             msg = "잘못된 파라미터입니다. 입력값을 다시 확인해주세요.";
